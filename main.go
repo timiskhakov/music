@@ -12,7 +12,7 @@ func main() {
 	file := "out.wav"
 	f, _ := os.Create(file)
 
-	g, _ := guitar.NewGuitar(guitar.Note{String: 1}, 1)
+	g, _ := guitar.NewGuitar(guitar.Note{String: 6}, 4)
 
 	wav.Encode(f, g, beep.Format{SampleRate: guitar.SampleRate, NumChannels: 2, Precision: 1})
 
