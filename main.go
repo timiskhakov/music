@@ -14,7 +14,7 @@ func main() {
 
 	g, _ := guitar.NewGuitar(guitar.Note{String: 6}, 4)
 
-	wav.Encode(f, g, beep.Format{SampleRate: guitar.SampleRate, NumChannels: 2, Precision: 1})
+	wav.Encode(f, g, beep.Format{SampleRate: guitar.SampleRate, NumChannels: 2, Precision: 3})
 
 	fmt.Println("Done")
 }
