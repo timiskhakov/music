@@ -15,41 +15,37 @@ const (
 	L          = 0.1
 )
 
-var notes = map[Note]float64{
-	Note{1, 0}: 329.63,
-	Note{2, 0}: 246.94,
-	Note{3, 0}: 196.00,
-	Note{4, 0}: 146.83,
-	Note{5, 0}: 110.00,
-	Note{6, 0}: 82.41,
-}
-
 type Guitar struct {
-	sound     []float64
+	tunes     []float64
 	processed int
 }
 
-func NewGuitar(note Note, duration int) (*Guitar, error) {
-	f, ok := notes[note]
-	if !ok {
-		return nil, fmt.Errorf("invalid note: %v", note)
+func NewGuitar(sounds ...Sound) (*Guitar, error) {
+	tunes := make([]float64, 0)
+	for _, sound := range sounds {
+		frequency, ok := notes[sound.Note]
+		if !ok {
+			return nil, fmt.Errorf("invalid note: %v", sound.Note)
+		}
+
+		tunes = append(tunes, pluck(frequency, sound.Duration)...)
 	}
 
-	return &Guitar{pluck(f, duration), 0}, nil
+	return &Guitar{tunes, 0}, nil
 }
 
 func (g *Guitar) Stream(samples [][2]float64) (int, bool) {
-	if g.processed >= len(g.sound) {
+	if g.processed >= len(g.tunes) {
 		return 0, false
 	}
 
-	if len(g.sound)-g.processed < len(samples) {
-		samples = samples[:len(g.sound)-g.processed]
+	if len(g.tunes)-g.processed < len(samples) {
+		samples = samples[:len(g.tunes)-g.processed]
 	}
 
 	for i := range samples {
-		samples[i][0] = g.sound[g.processed+i]
-		samples[i][1] = g.sound[g.processed+i]
+		samples[i][0] = g.tunes[g.processed+i]
+		samples[i][1] = g.tunes[g.processed+i]
 	}
 
 	g.processed += len(samples)
@@ -61,7 +57,7 @@ func (g *Guitar) Err() error {
 	return nil
 }
 
-func pluck(frequency float64, duration int) []float64 {
+func pluck(frequency float64, duration float64) []float64 {
 	N := int(SampleRate / frequency)
 
 	// Create noise
@@ -94,7 +90,7 @@ func pluck(frequency float64, duration int) []float64 {
 	noise = buffer
 
 	// Create samples and add some noise in the beginning
-	samples := make([]float64, SampleRate*duration)
+	samples := make([]float64, int(SampleRate*duration))
 	for i := 0; i < N; i++ {
 		samples[i] = noise[i]
 	}
