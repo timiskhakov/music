@@ -2,6 +2,11 @@ package guitar
 
 import "github.com/faiface/beep"
 
+type Note struct {
+	String int
+	Fret   int
+}
+
 type Guitar struct {
 	sampleRate  float64
 	synthesizer synthesizer

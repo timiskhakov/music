@@ -2,7 +2,7 @@ package song
 
 import (
 	"github.com/faiface/beep"
-	"music/guitar"
+	"github.com/timiskhakov/music/guitar"
 )
 
 func Portal(g *guitar.Guitar) beep.Streamer {

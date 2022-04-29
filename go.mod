@@ -1,4 +1,4 @@
-module music
+module github.com/timiskhakov/music
 
 go 1.18
 

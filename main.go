@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/wav"
-	"music/guitar"
-	"music/karplusstrong"
-	"music/song"
+	"github.com/timiskhakov/music/guitar"
+	"github.com/timiskhakov/music/karplusstrong"
+	"github.com/timiskhakov/music/song"
 	"os"
 )
 
