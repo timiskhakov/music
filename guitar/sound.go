@@ -1,19 +1,19 @@
 package guitar
 
-type Sound struct {
+type sound struct {
 	totalSamples []float64
 	processed    int
 }
 
-type Synthesizer interface {
+type synthesizer interface {
 	Synthesize(frequency float64, duration float64) []float64
 }
 
-func NewSound(synthesizer Synthesizer, note Note, duration float64) *Sound {
-	return &Sound{synthesizer.Synthesize(noteFrequencies[note], duration), 0}
+func newSound(synth synthesizer, note Note, duration float64) *sound {
+	return &sound{synth.Synthesize(noteFrequencies[note], duration), 0}
 }
 
-func (s *Sound) Stream(samples [][2]float64) (int, bool) {
+func (s *sound) Stream(samples [][2]float64) (int, bool) {
 	if s.processed >= len(s.totalSamples) {
 		return 0, false
 	}
@@ -32,6 +32,6 @@ func (s *Sound) Stream(samples [][2]float64) (int, bool) {
 	return len(samples), true
 }
 
-func (s *Sound) Err() error {
+func (s *sound) Err() error {
 	return nil
 }
