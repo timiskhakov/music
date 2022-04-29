@@ -22,29 +22,27 @@ func NewExtended(sampleRate int) *extended {
 }
 
 func (e *extended) Synthesize(frequency float64, duration float64) []float64 {
-	N := int(e.sampleRate / frequency)
-
 	// Create noise
-	noise := make([]float64, N)
+	noise := make([]float64, int(e.sampleRate/frequency))
 	for i := range noise {
 		noise[i] = rand.Float64()*2 - 1
 	}
 
 	// Pick-Direction Lowpass Filter
-	buffer := make([]float64, N)
+	buffer := make([]float64, len(noise))
 	buffer[0] = (1 - p) * noise[0]
-	for i := 1; i < N; i++ {
+	for i := 1; i < len(noise); i++ {
 		buffer[i] = (1-p)*noise[i] + p*buffer[i-1]
 	}
 	noise = buffer
 
 	// Pick-Position Comb Filter
-	pick := int(beta*float64(N) + 1/2)
+	pick := int(beta*float64(len(noise)) + 1/2)
 	if pick == 0 {
-		pick = N
+		pick = len(noise)
 	}
-	buffer = make([]float64, N)
-	for i := 0; i < N; i++ {
+	buffer = make([]float64, len(noise))
+	for i := 0; i < len(noise); i++ {
 		if i-pick < 0 {
 			buffer[i] = noise[i]
 		} else {
@@ -55,12 +53,12 @@ func (e *extended) Synthesize(frequency float64, duration float64) []float64 {
 
 	// Create samples and add some noise in the beginning
 	samples := make([]float64, int(e.sampleRate*duration))
-	for i := 0; i < N; i++ {
+	for i := 0; i < len(noise); i++ {
 		samples[i] = noise[i]
 	}
 
-	for i := N; i < len(samples); i++ {
-		samples[i] = firstOrderStringTuningAllpassFilter(samples, i, N)
+	for i := len(noise); i < len(samples); i++ {
+		samples[i] = firstOrderStringTuningAllpassFilter(samples, i, len(noise))
 	}
 
 	// Dynamic-level lowpass filter
