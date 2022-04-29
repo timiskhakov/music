@@ -5,19 +5,24 @@ import (
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/wav"
 	"music/guitar"
+	"music/karplusstrong"
 	"os"
 )
 
+const sampleRate = 44100
+
 func main() {
-	file := "out.wav"
-	f, _ := os.Create(file)
+	kse := karplusstrong.NewExtended(sampleRate)
 
-	g1, _ := guitar.NewGuitar(guitar.Sound{Note: guitar.Note{String: 1}, Duration: 4})
-	g2, _ := guitar.NewGuitar(guitar.Sound{Note: guitar.Note{String: 6}, Duration: 1})
+	chord := guitar.Chord(kse, []guitar.Note{
+		{String: 6},
+		{String: 3},
+		{String: 2},
+		{String: 1},
+	}, sampleRate, 4, 0.01)
 
-	mixer := beep.Mix(g1, g2)
-
-	wav.Encode(f, mixer, beep.Format{SampleRate: guitar.SampleRate, NumChannels: 2, Precision: 3})
+	f, _ := os.Create("out.wav")
+	wav.Encode(f, chord, beep.Format{SampleRate: sampleRate, NumChannels: 2, Precision: 3})
 
 	fmt.Println("Done")
 }

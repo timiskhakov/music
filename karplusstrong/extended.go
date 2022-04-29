@@ -1,4 +1,4 @@
-package guitar
+package karplusstrong
 
 import (
 	"math"
@@ -6,34 +6,23 @@ import (
 )
 
 const (
-	SampleRate = 44100
-	p          = 0.9
-	beta       = 0.1
-	S          = 0.5
-	C          = 0.1
-	L          = 0.1
+	p    = 0.9
+	beta = 0.1
+	s    = 0.5
+	c    = 0.1
+	l    = 0.1
 )
 
-func karplusStrong(frequency float64, duration int) []float64 {
-	noise := make([]float64, int(SampleRate/frequency))
-	for i := range noise {
-		noise[i] = rand.Float64()*2 - 1
-	}
-
-	samples := make([]float64, SampleRate*duration)
-	for i := range noise {
-		samples[i] = noise[i]
-	}
-
-	for i := len(noise) + 1; i < len(samples); i++ {
-		samples[i] = (samples[i-len(noise)] + samples[i-len(noise)-1]) / 2
-	}
-
-	return samples
+type extended struct {
+	sampleRate float64
 }
 
-func extendedKarplusStrong(frequency float64, duration float64) []float64 {
-	N := int(SampleRate / frequency)
+func NewExtended(sampleRate int) *extended {
+	return &extended{float64(sampleRate)}
+}
+
+func (e *extended) Synthesize(frequency float64, duration float64) []float64 {
+	N := int(e.sampleRate / frequency)
 
 	// Create noise
 	noise := make([]float64, N)
@@ -65,7 +54,7 @@ func extendedKarplusStrong(frequency float64, duration float64) []float64 {
 	noise = buffer
 
 	// Create samples and add some noise in the beginning
-	samples := make([]float64, int(SampleRate*duration))
+	samples := make([]float64, int(e.sampleRate*duration))
 	for i := 0; i < N; i++ {
 		samples[i] = noise[i]
 	}
@@ -75,7 +64,7 @@ func extendedKarplusStrong(frequency float64, duration float64) []float64 {
 	}
 
 	// Dynamic-level lowpass filter
-	w_tilde := math.Pi * frequency / SampleRate
+	w_tilde := math.Pi * frequency / e.sampleRate
 	buffer = make([]float64, len(samples))
 	buffer[0] = w_tilde / (1 + w_tilde) * samples[0]
 	for i := 1; i < len(samples); i++ {
@@ -83,7 +72,7 @@ func extendedKarplusStrong(frequency float64, duration float64) []float64 {
 	}
 
 	for i := 0; i < len(samples); i++ {
-		samples[i] = (math.Pow(L, 4/3) * samples[i]) + (1-L)*buffer[i]
+		samples[i] = (math.Pow(l, 4/3) * samples[i]) + (1-l)*buffer[i]
 	}
 
 	return samples
@@ -97,9 +86,9 @@ func delayLine(samples []float64, n, N int) float64 {
 }
 
 func stringDamplingFilter(samples []float64, n, N int) float64 {
-	return 0.996 * ((1-S)*delayLine(samples, n, N) + S*delayLine(samples, n-1, N))
+	return 0.996 * ((1-s)*delayLine(samples, n, N) + s*delayLine(samples, n-1, N))
 }
 
 func firstOrderStringTuningAllpassFilter(samples []float64, n, N int) float64 {
-	return C*(stringDamplingFilter(samples, n, N)-samples[n-1]) + stringDamplingFilter(samples, n-1, N)
+	return c*(stringDamplingFilter(samples, n, N)-samples[n-1]) + stringDamplingFilter(samples, n-1, N)
 }
