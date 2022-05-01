@@ -5,10 +5,6 @@ type sound struct {
 	processed    int
 }
 
-type synthesizer interface {
-	Synthesize(frequency float64, duration float64) []float64
-}
-
 func newSound(synth synthesizer, note Note, duration float64) *sound {
 	return &sound{synth.Synthesize(noteFrequencies[note], duration), 0}
 }

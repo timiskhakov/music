@@ -8,23 +8,23 @@ type Note struct {
 }
 
 type Guitar struct {
-	sampleRate  float64
-	synthesizer synthesizer
+	sampleRate float64
+	synth      synthesizer
 }
 
-func NewGuitar(sampleRate int, synthesizer synthesizer) *Guitar {
-	return &Guitar{float64(sampleRate), synthesizer}
+func NewGuitar(sampleRate int, synth synthesizer) *Guitar {
+	return &Guitar{float64(sampleRate), synth}
 }
 
 func (g *Guitar) Pluck(note Note, duration float64) beep.Streamer {
-	return newSound(g.synthesizer, note, duration)
+	return newSound(g.synth, note, duration)
 }
 
 func (g *Guitar) Chord(notes []Note, duration, delay float64) beep.Streamer {
 	streamers := make([]beep.Streamer, len(notes))
 	for i, note := range notes {
 		silence := beep.Silence(int(g.sampleRate * delay * float64(i)))
-		sound := newSound(g.synthesizer, note, duration-delay*float64(i))
+		sound := newSound(g.synth, note, duration-delay*float64(i))
 		streamers[i] = beep.Seq(silence, sound)
 	}
 

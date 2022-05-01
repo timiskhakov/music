@@ -10,15 +10,15 @@ const (
 	beta = 0.1
 	s    = 0.5
 	c    = 0.1
-	l    = 0.1
 )
 
 type extended struct {
 	sampleRate float64
+	level      float64
 }
 
-func NewExtended(sampleRate int) *extended {
-	return &extended{float64(sampleRate)}
+func NewExtended(sampleRate int, level float64) *extended {
+	return &extended{float64(sampleRate), level}
 }
 
 func (e *extended) Synthesize(frequency float64, duration float64) []float64 {
@@ -44,7 +44,7 @@ func (e *extended) Synthesize(frequency float64, duration float64) []float64 {
 	}
 
 	// Apply all samples filters
-	dynamicLevelLowpass(samples, math.Pi*frequency/e.sampleRate)
+	dynamicLevelLowpass(samples, math.Pi*frequency/e.sampleRate, e.level)
 
 	return samples
 }
@@ -89,7 +89,7 @@ func firstOrderStringTuningAllpass(samples []float64, n, N int) float64 {
 	return c*(oneZeroStringDamping(samples, n, N)-samples[n-1]) + oneZeroStringDamping(samples, n-1, N)
 }
 
-func dynamicLevelLowpass(samples []float64, w float64) {
+func dynamicLevelLowpass(samples []float64, w float64, l float64) {
 	buffer := make([]float64, len(samples))
 	buffer[0] = w / (1 + w) * samples[0]
 	for i := 1; i < len(samples); i++ {
