@@ -6,10 +6,10 @@ import (
 )
 
 func Portal(g *guitar.Guitar) beep.Streamer {
-	return beep.Mix(lead(g), rhythm(g))
+	return beep.Mix(portalLead(g), portalRhythm(g))
 }
 
-func lead(g *guitar.Guitar) beep.Streamer {
+func portalLead(g *guitar.Guitar) beep.Streamer {
 	return beep.Seq(
 		// Verse 1
 		// 1
@@ -153,7 +153,7 @@ func lead(g *guitar.Guitar) beep.Streamer {
 	)
 }
 
-func rhythm(g *guitar.Guitar) beep.Streamer {
+func portalRhythm(g *guitar.Guitar) beep.Streamer {
 	return beep.Seq(
 		// Verse 1
 		// 1

@@ -22,9 +22,10 @@ func main() {
 func run() error {
 	kse := karplusstrong.NewExtended(sampleRate)
 	g := guitar.NewGuitar(sampleRate, kse)
-	s := song.Portal(g)
+	//s := song.Portal(g)
+	s := song.Hurt(g)
 
-	name := "portal.wav"
+	name := "hurt.wav"
 	f, err := os.Create(name)
 	if err != nil {
 		return err
