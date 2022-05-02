@@ -24,9 +24,10 @@ func run() error {
 	g1 := guitar.NewGuitar(sampleRate, kse1)
 	kse2 := karplusstrong.NewExtended(sampleRate, 0.05)
 	g2 := guitar.NewGuitar(sampleRate, kse2)
-	//s := song.Portal(g)
+	//s := song.Portal(g1, g2)
 	s := song.Hurt(g1, g2)
 
+	// name := "portal.wav"
 	name := "hurt.wav"
 	f, err := os.Create(name)
 	if err != nil {
@@ -34,7 +35,7 @@ func run() error {
 	}
 
 	fmt.Printf("Saving to %s...\n", name)
-	if err = wav.Encode(f, s, beep.Format{SampleRate: sampleRate, NumChannels: 2, Precision: 2}); err != nil {
+	if err = wav.Encode(f, s, beep.Format{SampleRate: sampleRate, NumChannels: 2, Precision: 3}); err != nil {
 		return err
 	}
 

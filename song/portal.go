@@ -5,8 +5,8 @@ import (
 	"github.com/timiskhakov/music/guitar"
 )
 
-func Portal(g *guitar.Guitar) beep.Streamer {
-	return beep.Mix(portalLead(g), portalRhythm(g))
+func Portal(g1, g2 *guitar.Guitar) beep.Streamer {
+	return beep.Mix(portalLead(g1), portalRhythm(g2))
 }
 
 func portalLead(g *guitar.Guitar) beep.Streamer {
@@ -241,7 +241,7 @@ func portalRhythm(g *guitar.Guitar) beep.Streamer {
 		g.Pluck(guitar.Note{5, 0}, .5),
 		g.Pluck(guitar.Note{5, 0}, .5),
 		// 24
-		g.Chord([]guitar.Note{{5, 0}, {4, 0}, {3, 0}, {4, 0}}, 1, 0.25),
-		g.Chord([]guitar.Note{{5, 2}, {4, 0}, {3, 0}, {4, 0}}, 1, 0.25),
+		//g.Chord([]guitar.Note{{5, 0}, {4, 0}, {3, 0}, {4, 0}}, 1, 0.25),
+		//g.Chord([]guitar.Note{{5, 2}, {4, 0}, {3, 0}, {4, 0}}, 1, 0.25),
 	)
 }
