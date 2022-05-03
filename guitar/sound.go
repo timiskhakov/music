@@ -6,7 +6,7 @@ type sound struct {
 }
 
 func newSound(synth synthesizer, note Note, duration float64) *sound {
-	return &sound{synth.Synthesize(noteFrequencies[note], duration), 0}
+	return &sound{synth.Synthesize(frequencies[note], duration), 0}
 }
 
 func (s *sound) Stream(samples [][2]float64) (int, bool) {

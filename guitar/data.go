@@ -1,6 +1,6 @@
 package guitar
 
-var noteFrequencies = map[Note]float64{
+var frequencies = map[Note]float64{
 	// String 1: E
 	Note{1, 0}:  329.63,
 	Note{1, 1}:  349.23,
