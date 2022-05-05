@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	p    = 0.9
-	beta = 0.1
-	s    = 0.5
-	c    = 0.1
+	p = 0.9
+	b = 0.1
+	s = 0.5
+	c = 0.1
 )
 
 type extended struct {
@@ -34,7 +34,7 @@ func (e *extended) Synthesize(frequency float64, duration float64) []float64 {
 
 	// Create samples and add some noise in the beginning
 	samples := make([]float64, int(e.sampleRate*duration))
-	for i := 0; i < len(noise); i++ {
+	for i := range noise {
 		samples[i] = noise[i]
 	}
 
@@ -59,12 +59,12 @@ func pickDirectionLowpass(noise []float64) {
 }
 
 func pickPositionComb(noise []float64) {
-	pick := int(beta*float64(len(noise)) + 1/2)
+	pick := int(b*float64(len(noise)) + 1/2)
 	if pick == 0 {
 		pick = len(noise)
 	}
 	buffer := make([]float64, len(noise))
-	for i := 0; i < len(noise); i++ {
+	for i := range noise {
 		if i-pick < 0 {
 			buffer[i] = noise[i]
 		} else {
@@ -96,7 +96,7 @@ func dynamicLevelLowpass(samples []float64, w float64, l float64) {
 		buffer[i] = w/(1+w)*(samples[i]+samples[i-1]) + (1-w)/(1+w)*buffer[i-1]
 	}
 
-	for i := 0; i < len(samples); i++ {
+	for i := range samples {
 		samples[i] = (math.Pow(l, 4/3) * samples[i]) + (1-l)*buffer[i]
 	}
 }
